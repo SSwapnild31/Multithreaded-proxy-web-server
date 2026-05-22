@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
 #include <pthread.h>
 
 #include "cache.h"
@@ -27,13 +27,11 @@ cache_node* cache_get(char *url){
         if(strcmp(temp->url, url) == 0){
             move_to_front(temp, &head, &tail);
             pthread_mutex_unlock(&cache_lock);
-
             return temp;
         }
         temp = temp -> next;
     }
     pthread_mutex_unlock(&cache_lock);
-
     return NULL;
 }
 
@@ -42,20 +40,16 @@ void cache_put(char *url, char *response, int size){
     pthread_mutex_lock(&cache_lock);
 
     cache_node *node = malloc(sizeof(cache_node));
-
     strcpy(node->url, url);
-
     node->response = malloc(size);
 
     memcpy(node->response, response, size);
-
     node->size = size;
 
     node->prev = NULL;
     node->next = NULL;
 
     insert_front(node, &head, &tail);
-    
     cache_count++;
 
     if(cache_count > MAX_CACHE_SIZE){
