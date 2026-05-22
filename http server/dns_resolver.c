@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <netdb.h>
-
 #include "dns_resolver.h"
 
 int resolve_hostname(const char *host, char *ip){
