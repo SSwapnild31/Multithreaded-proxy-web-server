@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
@@ -18,22 +17,18 @@ void handle_client(int client_fd){
     char buffer[BUFFER_SIZE];
 
     int bytes = recv(client_fd, buffer, sizeof(buffer)-1, 0);
-
     if(bytes <= 0){
         return;
     }
-
+    
     buffer[bytes] = '\0';
-
     http_request req;
 
     if(parse_request(buffer, &req) < 0){
         printf("Parse Failed\n");
         return;
     }
-
     printf("Host: %s\n",req.host);
-
     cache_node *cached = cache_get(req.path);
 
     if(cached){
@@ -50,9 +45,8 @@ void handle_client(int client_fd){
         printf("DNS Failed\n");
         return;
     }
-
+    
     printf("IP : %s\n",ip);
-
     int remote_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     struct sockaddr_in remote_addr;
@@ -68,9 +62,8 @@ void handle_client(int client_fd){
     send(remote_fd, buffer, strlen(buffer), 0);
 
     char response[BUFFER_SIZE];
-
     int total = 0;
-
+    
     while((bytes = recv(remote_fd, response + total, BUFFER_SIZE - total, 0)) > 0){
         total += bytes;
     }
